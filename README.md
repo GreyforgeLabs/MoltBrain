@@ -16,6 +16,8 @@
   <a href="#-quick-install">Install</a> •
   <a href="#-features">Features</a> •
   <a href="#-how-it-works">How It Works</a> •
+  <a href="#-storage-dapp">Storage</a> •
+  <a href="#-virtuals-protocol-integration">Virtuals</a> •
   <a href="#-openclaw-integration">OpenClaw</a> •
   <a href="#%EF%B8%8F-configuration">Config</a> •
   <a href="#-api">API</a>
@@ -265,6 +267,85 @@ curl "http://localhost:37777/api/stats"
 
 ---
 
+## 🗄️ Storage Dapp
+
+Persistent, Postgres-backed storage for agents and apps. Live at **[app.moltbrain.dev/storage](https://app.moltbrain.dev/storage)**.
+
+```
++-----------------------------------------------------------------------------+
+|                                                                             |
+|   BLOB STORAGE      Content-addressed JSON blobs via SHA-256                |
+|   ----------         Store and retrieve data by hash. $0.01 per request.   |
+|                                                                             |
+|   MEMORY SLOTS      Named key-value slots for agent state                  |
+|   ----------         Allocate, write, read. Persistent across sessions.    |
+|                                                                             |
+|   AGENT VAULT       Per-wallet scoping with label badges                   |
+|   ----------         Connect the same wallet your agents use.              |
+|                      Browse, view, and delete what they stored.            |
+|                                                                             |
++-----------------------------------------------------------------------------+
+```
+
+All endpoints are paid via [x402](https://www.x402.org) micropayments ($0.01 USDC on Base). Data is scoped per wallet, backed by Postgres, and survives redeploys.
+
+Agents can tag stored data with a `label` (e.g. `"openclaw_session"`, `"virtuals_agent"`) so the vault shows what stored each item.
+
+```bash
+# Store a blob
+curl -X POST https://app.moltbrain.dev/api/x402/store \
+  -H "X-PAYMENT: <x402_header>" \
+  -d '{"data": {"key": "value"}, "label": "my_agent"}'
+
+# List your blobs
+curl https://app.moltbrain.dev/api/x402/list/blobs \
+  -H "X-PAYMENT: <x402_header>"
+
+# Full catalog
+curl https://app.moltbrain.dev/api/x402/catalog
+```
+
+<br>
+
+---
+
+## 🎮 Virtuals Protocol Integration
+
+GAME SDK plugin that gives any [Virtuals Protocol](https://virtuals.io) AI agent persistent memory and storage via MoltBrain.
+
+```bash
+npm install @moltbrain/game-plugin
+```
+
+```typescript
+import { GameAgent } from "@virtuals-protocol/game";
+import { MoltBrainPlugin } from "@moltbrain/game-plugin";
+
+const moltbrain = new MoltBrainPlugin({
+  privateKey: process.env.AGENT_PRIVATE_KEY!, // wallet with USDC on Base
+});
+
+const agent = new GameAgent(process.env.GAME_API_KEY!, {
+  name: "My Agent",
+  goal: "Remember everything across sessions",
+  description: "An agent with persistent memory via MoltBrain",
+  workers: [moltbrain.getWorker()],
+});
+
+await agent.init();
+await agent.step({ verbose: true });
+```
+
+9 functions available: `moltbrain_chat`, `moltbrain_search`, `moltbrain_store`, `moltbrain_retrieve`, `moltbrain_allocate_slot`, `moltbrain_write_slot`, `moltbrain_read_slot`, `moltbrain_stats`, `moltbrain_capacity`.
+
+Everything the agent stores shows up in the vault dapp at [app.moltbrain.dev/storage](https://app.moltbrain.dev/storage). Connect the same wallet to browse it.
+
+See the full plugin repo: **[github.com/nhevers/Moltbrain-virtuals](https://github.com/nhevers/Moltbrain-virtuals)**
+
+<br>
+
+---
+
 ## 🦞 OpenClaw Integration
 
 Works with [OpenClaw](https://github.com/openclaw/openclaw) (116k+ stars) - the popular personal AI assistant!
@@ -373,6 +454,13 @@ AGPL-3.0
 
 <p align="center">
   <strong>Built with care for the OpenClaw, MoltBook & Claude Code community</strong>
+</p>
+
+<p align="center">
+  <a href="https://app.moltbrain.dev">App</a> •
+  <a href="https://app.moltbrain.dev/storage">Storage Dapp</a> •
+  <a href="https://github.com/nhevers/Moltbrain-virtuals">Virtuals Plugin</a> •
+  <a href="https://www.x402.org">x402 Protocol</a>
 </p>
 
 <p align="center">
