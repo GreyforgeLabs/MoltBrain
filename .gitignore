@@ -31,3 +31,7 @@ src/ui/viewer.html
 # Prevent other malformed path directories
 http*/
 https*/
+
+# Keep the real HTTP source tree tracked
+!src/core/engine/http/
+!src/core/engine/http/**
