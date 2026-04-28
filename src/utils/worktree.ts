@@ -14,7 +14,7 @@ import path from 'path';
 export interface WorktreeInfo {
   isWorktree: boolean;
   worktreeName: string | null;     // e.g., "yokohama"
-  parentRepoPath: string | null;   // e.g., "/Users/alex/main"
+  parentRepoPath: string | null;   // e.g., "/Users/example/main"
   parentProjectName: string | null; // e.g., "main"
 }
 

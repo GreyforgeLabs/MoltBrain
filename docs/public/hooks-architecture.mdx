@@ -661,7 +661,7 @@ claude --debug
 # Test context hook
 echo '{
   "session_id": "test123",
-  "cwd": "/Users/alex/projects/my-app",
+  "cwd": "/Users/example/projects/my-app",
   "hook_event_name": "SessionStart",
   "source": "startup"
 }' | node extension/runtime/context-hook.js

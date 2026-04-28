@@ -5,7 +5,7 @@
  */
 
 import { TranscriptParser } from '../src/utils/transcript-parser.js';
-import { writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 
 const transcriptPath = process.argv[2];
 
@@ -92,8 +92,11 @@ for (const entry of entries) {
   }
 }
 
-const outputPath = '/Users/alexnewman/Scripts/claude-recall/docs/context/transcript-dump.md';
+const outputDir = new URL('../docs/context/', import.meta.url);
+mkdirSync(outputDir, { recursive: true });
+
+const outputPath = new URL('transcript-dump.md', outputDir);
 writeFileSync(outputPath, output, 'utf-8');
 
-console.log(`\nTranscript dumped to: ${outputPath}`);
+console.log(`\nTranscript dumped to: ${outputPath.pathname}`);
 console.log(`Showing first 20 conversation entries (skipped file-history-snapshot and summary types)\n`);

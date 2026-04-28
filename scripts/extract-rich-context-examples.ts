@@ -5,7 +5,7 @@
  */
 
 import { TranscriptParser } from '../src/utils/transcript-parser.js';
-import { writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import type { AssistantTranscriptEntry, UserTranscriptEntry } from '../src/types/transcript.js';
 
 const transcriptPath = process.argv[2];
@@ -169,9 +169,12 @@ output += `3. Group related tools into coherent actions\n`;
 output += `4. Avoid "investigating" - the context is already present\n\n`;
 
 // Write to file
-const outputPath = '/Users/alexnewman/Scripts/claude-recall/docs/context/rich-context-examples.md';
+const outputDir = new URL('../docs/context/', import.meta.url);
+mkdirSync(outputDir, { recursive: true });
+
+const outputPath = new URL('rich-context-examples.md', outputDir);
 writeFileSync(outputPath, output, 'utf-8');
 
 console.log(`\nExtracted ${examplesFound} examples with rich context`);
-console.log(`Written to: ${outputPath}\n`);
+console.log(`Written to: ${outputPath.pathname}\n`);
 console.log(`This shows the gap between what's available (rich context) and what's sent (isolated tools)\n`);
